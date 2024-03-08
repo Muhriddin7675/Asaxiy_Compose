@@ -5,11 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.asaxiybooks.domain.AppRepository
 import com.example.asaxiycompose2.data.model.AudioDataForAdapter
 import com.example.asaxiycompose2.navigation.AppNavigator
+import com.example.asaxiycompose2.screen.audioall.ByCategoryAllAudioScreen
 import com.example.asaxiycompose2.utils.myLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -36,6 +38,16 @@ class AudioViewModel @Inject constructor(
                         errorMessage.emit(it.message.toString())
                     }
                 }.launchIn(viewModelScope)
+
+            is AudioIntent.ClickAllAudio -> {
+                viewModelScope.launch {
+                    navigator.navigate(ByCategoryAllAudioScreen(intent.list))
+                }
+            }
+
+            is AudioIntent.ClickItemAudio -> {
+
+            }
         }
     }
 }

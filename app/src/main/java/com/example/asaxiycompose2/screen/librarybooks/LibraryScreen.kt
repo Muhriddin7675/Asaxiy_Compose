@@ -2,6 +2,7 @@ package com.example.asaxiycompose2.screen.librarybooks
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -14,7 +15,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +30,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,19 +49,27 @@ class LibraryScreen() : Screen {
     @Composable
     override fun Content() {
         val viewModel = getViewModel<LibraryViewModel>()
+
         viewModel.onEventDispatcherLibrary(LibraryIntent.GetAllCategoryList)
+
         val categoryList by viewModel.loadCategoryBookList.collectAsState(initial = null)
         val progress by viewModel.progress.collectAsState(initial = null)
         val message by viewModel.errorMessage.collectAsState(initial = null)
         if (message != null) {
             Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
         }
-        categoryList?.let { LibraryContent(it) }
+        categoryList?.let {
+            LibraryContent(it, viewModel)
+        }
     }
 }
 
 @Composable
-fun LibraryContent(list: List<AudioDataForAdapter>) {
+fun LibraryContent(
+    list: List<AudioDataForAdapter>,
+    viewModel: LibraryViewModel,
+
+    ) {
     var progress by remember { mutableStateOf(0.0f) }
 
     LaunchedEffect(key1 = true) {
@@ -89,14 +99,14 @@ fun LibraryContent(list: List<AudioDataForAdapter>) {
             )
 
         }
-    }
-    LazyColumn {
+        LazyColumn {
 
-        items(list) { byCategory ->
-            categoryItem(ls = byCategory)
+            items(list) { byCategory ->
+                categoryItem(ls = byCategory, viewModel::onEventDispatcherLibrary)
+            }
+
+
         }
-
-
     }
 //    Box(modifier = Modifier.fillMaxSize()) {
 //        CircularProgressIndicator(
@@ -110,15 +120,15 @@ fun LibraryContent(list: List<AudioDataForAdapter>) {
 
 
 @Composable
-fun bookItem(bookUIData: BookUIData) {
+fun bookItem(bookUIData: BookUIData, modifier: Modifier) {
     Column(
-        modifier = Modifier
+        modifier = modifier/*Modifier
             .width(160.dp)
             .height(300.dp)
             .padding(4.dp)
             .background(
                 Color.White, shape = RoundedCornerShape(12.dp)
-            )
+            )*/
     ) {
         Box(
             modifier = Modifier
@@ -157,7 +167,7 @@ fun bookItem(bookUIData: BookUIData) {
                     fontSize = 16.sp,
                     overflow = TextOverflow.Ellipsis,
 
-//                    fontFamily = FontFamily(Font(R.font.nunito_extrabold)),
+                    fontFamily = FontFamily(Font(R.font.nunito_extrabold)),
                     maxLines = 2
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -167,7 +177,7 @@ fun bookItem(bookUIData: BookUIData) {
                     color = colorResource(id = R.color.gray_500),
                     fontSize = 14.sp,
                     overflow = TextOverflow.Ellipsis,
-//                    fontFamily = FontFamily(Font(R.font.nunito_bold)),
+                    fontFamily = FontFamily(Font(R.font.nunito_bold)),
                     maxLines = 1
                 )
             }
@@ -179,7 +189,7 @@ fun bookItem(bookUIData: BookUIData) {
 }
 
 @Composable
-fun categoryItem(ls: AudioDataForAdapter) {
+fun categoryItem(ls: AudioDataForAdapter,onEventDispatcher: (LibraryIntent) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -206,13 +216,27 @@ fun categoryItem(ls: AudioDataForAdapter) {
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .padding(end = 16.dp)
+                    .clickable {
+                        onEventDispatcher.invoke(LibraryIntent.ClickAll(ls))
+                    }
+
             )
 
         }
 
         LazyRow {
             items(ls.list) { bookData->
-                bookItem(bookData)
+               bookItem(bookData, Modifier
+                    .width(160.dp)
+                    .height(300.dp)
+                    .padding(4.dp)
+                    .background(
+                        Color.White, shape = RoundedCornerShape(12.dp)
+                    )
+                    .clickable {
+                        onEventDispatcher.invoke(LibraryIntent.ClickItem(data = bookData))
+                    }
+                )
             }
 
         }

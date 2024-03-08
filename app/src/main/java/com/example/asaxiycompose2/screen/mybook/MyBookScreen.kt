@@ -42,9 +42,9 @@ class MyBookScreen : Screen {
     override fun Content() {
         val viewModel = getViewModel<MyBookViewModel>()
         val bookList by viewModel.loadDataSharedFlow.collectAsState(initial = null)
-        if(bookList == null || bookList!!.isEmpty()){
-          MyBookContent(bookList = emptyList())
-        }else{
+        if (bookList == null || bookList!!.isEmpty()) {
+            MyBookContent(bookList = emptyList())
+        } else {
             MyBookContent(bookList = bookList!!)
         }
     }
@@ -96,7 +96,7 @@ fun BookCard(bookData: MyBooksUiData) {
         modifier = Modifier
             .fillMaxWidth()
             .height(120.dp)
-            .padding(2.dp)
+            .padding(start = 8.dp, end = 8.dp, top = 2.dp, bottom = 2.dp)
             .background(Color.White, RoundedCornerShape(12.dp))
     ) {
         Row(
@@ -148,6 +148,7 @@ fun BookCard(bookData: MyBooksUiData) {
                     StatusEnum.PDF -> {
                         painterResource(id = R.drawable.read_book)
                     }
+
                     StatusEnum.AUDIO -> {
                         painterResource(id = R.drawable.ic_audio)
                     }

@@ -5,11 +5,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.asaxiybooks.domain.AppRepository
 import com.example.asaxiycompose2.data.model.AudioDataForAdapter
 import com.example.asaxiycompose2.navigation.AppNavigator
+import com.example.asaxiycompose2.screen.allbook.ByCategoryAllBookScreen
+import com.example.asaxiycompose2.screen.librarybooks.LibraryIntent.ClickAll
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -35,8 +37,20 @@ class LibraryViewModel @Inject constructor(
                         errorMessage.emit(it.message.toString())
                     }
                 }.launchIn(viewModelScope)
-
             }
+
+            is LibraryIntent.ClickAll -> {
+                viewModelScope.launch {
+                    navigator.navigate(ByCategoryAllBookScreen(intent.list))
+                    "click all ${intent.list.list.size}"
+                }
+            }
+            is LibraryIntent.ClickItem -> {
+                viewModelScope.launch {
+
+                }
+            }
+
         }
     }
 }
