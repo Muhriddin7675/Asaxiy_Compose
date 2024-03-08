@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:aapt="http://schemas.android.com/aapt" android:height="86dp" android:width="92dp" android:viewportWidth="92" android:viewportHeight="86">
+    <path android:fillColor="#ffebe7" android:pathData="M22.619,58.54a23.492,5.46 0,1 0,46.984 0a23.492,5.46 0,1 0,-46.984 0z"/>
+    <path android:fillColor="#ffbebd" android:pathData="M69.752,28.245C69.552,27.461 70.276,26.754 71.054,26.973C71.833,27.192 72.083,28.172 71.504,28.737C70.925,29.302 69.952,29.028 69.752,28.245Z"/>
+    <path android:fillColor="#ffbebd" android:pathData="M21.198,28.245C20.998,27.461 21.722,26.754 22.501,26.973C23.28,27.192 23.529,28.172 22.951,28.737C22.372,29.302 21.398,29.028 21.198,28.245Z"/>
+    <path android:fillColor="#ffbebd" android:pathData="M36.886,3.541C37.103,2.644 38.379,2.644 38.596,3.541C38.673,3.862 38.924,4.112 39.244,4.19C40.141,4.406 40.141,5.683 39.244,5.899C38.924,5.977 38.673,6.227 38.596,6.548C38.379,7.445 37.103,7.445 36.886,6.548C36.809,6.227 36.558,5.977 36.237,5.899C35.34,5.683 35.34,4.406 36.237,4.19C36.558,4.112 36.809,3.862 36.886,3.541Z"/>
+    <path android:fillColor="#00000000" android:pathData="M47.64,57.592C47.64,57.719 47.537,57.822 47.41,57.822C47.283,57.822 47.18,57.719 47.18,57.592C47.18,57.465 47.283,57.362 47.41,57.362C47.537,57.362 47.64,57.465 47.64,57.592Z" android:strokeColor="#ffbebd" android:strokeWidth="2.4829"/>
+    <path android:fillColor="#ffbebd" android:pathData="M68.835,49.573C69.051,48.675 70.328,48.675 70.544,49.573C70.622,49.894 70.872,50.144 71.193,50.221C72.09,50.438 72.09,51.714 71.193,51.931C70.872,52.008 70.622,52.259 70.544,52.579C70.328,53.477 69.051,53.477 68.835,52.579C68.757,52.259 68.507,52.008 68.186,51.931C67.289,51.714 67.289,50.438 68.186,50.221C68.507,50.144 68.757,49.894 68.835,49.573Z"/>
+    <path android:fillColor="#00000000" android:pathData="M71.161,40.777m-1.241,0a1.241,1.241 0,1 1,2.483 0a1.241,1.241 0,1 1,-2.483 0" android:strokeColor="#fc9999" android:strokeWidth="0.4598"/>
+</vector>

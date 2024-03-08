@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">AsaxiyBooks</string>
+    <string name="profil">Profil</string>
+    <string name="kitoblarim">Kitoblarim</string>
+    <string name="kutubxona">Kutubxona</string>
+    <string name="audio_kitoblar">Audio kitoblar</string>
+    <string name="mening_kitoblarim">Mening kitoblarim</string>
+    <string name="hammasi">Hammasi</string>
+    <string name="aksiya">Aksiya</string>
+    <string name="kungaboqar_yog_i_oila_tanlovi_tozalangan_va_xidsiz">Kungaboqar yog‘i Oila tanlovi, tozalangan va xidsiz</string>
+    <string name="paulo_kole">Paulo Kole</string>
+    <string name="category">Category</string>
+    <string name="elektron_kitoblar">Elektron kitoblar</string>
+    <string name="cheksiz_bilim">Cheksiz bilim</string>
+    <string name="intro_text_first"> Sizning cho‘ntagingizda, har kuni, har yerda, xoxlagan vaqtingizda</string>
+    <string name="intro_text_second"> O‘zingiz yoqtirgan kitoblarni audio formatda eshitish imkoniyati</string>
+    <string name="intro_text_tread"> O‘qing, tinglang, tahlil qiling, fikr bildiring,\n bilimingizni oshiring </string>
+    <string name="asaxiy_books_ilovasidan_ro_yhatdan_oting">Asaxiy books ilovasidan ro‘yhatdan o‘ting</string>
+    <string name="purchased_books">Purchased books</string>
+    <string name="buyurtmalar_tarixi">Buyurtmalar tarixi</string>
+</resources>

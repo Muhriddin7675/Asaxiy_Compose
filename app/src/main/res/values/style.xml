@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="roundedImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+    <style name="MyTabLayoutStyle">
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="disableSplash">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="TextStyle">
+        <item name="android:textSize">22sp</item>
+        <item name="fontFamily">@font/nunito_extrabold</item>
+    </style>
+
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <!-- Hint color -->
+        <item name="android:textColorHint">#FFFFFF</item>
+    </style>
+
+    <style name="BottomNavigationBar" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:elevation">0dp</item>
+    </style>
+
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">#00000000</item>
+        <item name="colorPrimaryDark">@android:color/holo_orange_dark</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
+</resources>
