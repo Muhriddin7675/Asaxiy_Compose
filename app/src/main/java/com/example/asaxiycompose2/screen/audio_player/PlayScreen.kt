@@ -1,5 +1,6 @@
 package com.example.asaxiycompose2.screen.audio_player
 
+import android.widget.SeekBar
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -153,11 +154,38 @@ class PlayScreen : Screen {
                         .weight(1f)
                 ) {
                     // 00:00
+
+
+                    Spacer(modifier = Modifier.height(42.dp))
+                    Text(
+                        textAlign = TextAlign.Start,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
+                        text = "Title" ?: "Unknown",
+                        fontSize = 20.sp,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
+
+                    Text(
+                        textAlign = TextAlign.Start,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 4.dp),
+                        text = "Artist" ?: "-- -- --",
+                        fontSize = 18.sp,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(56.dp))
+
+
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp)
                     ) {
+
                         Text(
                             modifier = Modifier
                                 .width(0.dp)
@@ -173,30 +201,7 @@ class PlayScreen : Screen {
                             text = duration
                         )
                     }
-
-
-                    Spacer(modifier = Modifier.height(56.dp))
-                    Text(
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        text = "Title" ?: "Unknown",
-                        fontSize = 20.sp,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
-
-                    Text(
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 4.dp),
-                        text = "Artist" ?: "-- -- --",
-                        fontSize = 18.sp,
-                        color = Color.White
-                    )
-                    Spacer(modifier = Modifier.height(56.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
