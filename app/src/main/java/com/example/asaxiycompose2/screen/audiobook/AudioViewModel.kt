@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.asaxiybooks.domain.AppRepository
 import com.example.asaxiycompose2.data.model.AudioDataForAdapter
 import com.example.asaxiycompose2.navigation.AppNavigator
+import com.example.asaxiycompose2.screen.audio_player.PlayScreen
 import com.example.asaxiycompose2.screen.audioall.ByCategoryAllAudioScreen
 import com.example.asaxiycompose2.utils.myLog
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,7 +47,9 @@ class AudioViewModel @Inject constructor(
             }
 
             is AudioIntent.ClickItemAudio -> {
-
+                 viewModelScope.launch{
+                     navigator.navigate(PlayScreen(intent.data))
+                 }
             }
         }
     }

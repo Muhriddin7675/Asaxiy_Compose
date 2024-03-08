@@ -6,7 +6,7 @@ import com.example.asaxiybooks.domain.AppRepository
 import com.example.asaxiycompose2.data.model.AudioDataForAdapter
 import com.example.asaxiycompose2.navigation.AppNavigator
 import com.example.asaxiycompose2.screen.allbook.ByCategoryAllBookScreen
-import com.example.asaxiycompose2.screen.librarybooks.LibraryIntent.ClickAll
+import com.example.asaxiycompose2.screen.book_info.BookInfoScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -47,7 +47,7 @@ class LibraryViewModel @Inject constructor(
             }
             is LibraryIntent.ClickItem -> {
                 viewModelScope.launch {
-
+                navigator.navigate(BookInfoScreen(intent.data))
                 }
             }
 

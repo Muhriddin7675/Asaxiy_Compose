@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.asaxiybooks.domain.AppRepository
 import com.example.asaxiycompose2.navigation.AppNavigator
 import com.example.asaxiycompose2.screen.allbook.AllBookIntent.ClickItem
+import com.example.asaxiycompose2.screen.book_info.BookInfoScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -18,7 +19,7 @@ class AllBookViewModel @Inject constructor(
         when(intent){
             is ClickItem ->{
             viewModelScope.launch{
-
+              navigator.navigate(BookInfoScreen(intent.bookData))
             }
             }
         }

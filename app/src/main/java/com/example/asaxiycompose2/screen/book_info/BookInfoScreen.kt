@@ -33,9 +33,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.example.asaxiycompose2.R
+import com.example.asaxiycompose2.data.model.BookUIData
 import com.example.asaxiycompose2.ui.theme.AsaxiyCompose2Theme
 
-class BookInfoScreen : Screen {
+class BookInfoScreen(data: BookUIData) : Screen {
     @Composable
     override fun Content() {
         CustomComposeFunction()

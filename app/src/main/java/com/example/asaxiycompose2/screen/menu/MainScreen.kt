@@ -167,7 +167,7 @@ object ProfileTab : Tab {
         Box(modifier = Modifier
             .fillMaxSize()
             .background(Color.White)) {
-            PlayScreen().Content()
+            ProfileScreen().Content()
         }
     }
 }
