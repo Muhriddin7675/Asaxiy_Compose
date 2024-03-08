@@ -24,6 +24,7 @@ import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.example.asaxiycompose2.R
+import com.example.asaxiycompose2.screen.audio_player.PlayScreen
 import com.example.asaxiycompose2.screen.audiobook.AudioScreen
 import com.example.asaxiycompose2.screen.librarybooks.LibraryScreen
 import com.example.asaxiycompose2.screen.mybook.MyBookScreen
@@ -166,7 +167,7 @@ object ProfileTab : Tab {
         Box(modifier = Modifier
             .fillMaxSize()
             .background(Color.White)) {
-            ProfileScreen().Content()
+            PlayScreen().Content()
         }
     }
 }

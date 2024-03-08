@@ -128,7 +128,6 @@ class BookInfoScreen : Screen {
                         color = Color(0xFFA7A7A7)
                     )
                 }
-
             })
     }
 

@@ -225,6 +225,6 @@ fun categoryItem(ls: AudioDataForAdapter) {
 @Composable
 fun PreviewLibraryContent() {
     AsaxiyCompose2Theme {
-//        LibraryContent()
+        LibraryContent(emptyList())
     }
 }
