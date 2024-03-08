@@ -81,7 +81,7 @@ class PlayScreen : Screen {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.LightGray)
+                .background(Color.White)
         ) {
 
             Row(
