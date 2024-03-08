@@ -27,6 +27,7 @@ import com.example.asaxiycompose2.R
 import com.example.asaxiycompose2.screen.audiobook.AudioScreen
 import com.example.asaxiycompose2.screen.librarybooks.LibraryScreen
 import com.example.asaxiycompose2.screen.mybook.MyBookScreen
+import com.example.asaxiycompose2.screen.profile.ProfileScreen
 import com.example.asaxiycompose2.ui.theme.AsaxiyCompose2Theme
 
 
@@ -165,7 +166,7 @@ object ProfileTab : Tab {
         Box(modifier = Modifier
             .fillMaxSize()
             .background(Color.White)) {
-
+            ProfileScreen().Content()
         }
     }
 }
