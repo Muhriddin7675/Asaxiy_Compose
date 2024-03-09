@@ -2,6 +2,7 @@ package com.example.asaxiycompose2.screen.profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,11 +36,11 @@ class ProfileScreen : Screen {
     @Composable
     override fun Content() {
         val viewModel = getViewModel<ProfileViewModel>()
-        ProfileContent(eventDispatcher = viewModel::onEventDispatcherRegister)
+        ProfileContent(viewModel)
     }
 
     @Composable
-    fun ProfileContent(eventDispatcher: (ProfileIntent) -> Unit) {
+    fun ProfileContent(viewModel: ProfileViewModel) {
 
         Column(
             modifier = Modifier
@@ -77,7 +78,7 @@ class ProfileScreen : Screen {
                     modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = "Maqsudov Abdulbosit",
+                        text = "Valiyev Muhriddin",
                         color = Color.Black,
                         fontFamily = FontFamily(Font(R.font.nunito_semi_bold)),
                         fontSize = 22.sp,
@@ -162,12 +163,12 @@ class ProfileScreen : Screen {
                     .background(Color(0xFFE9E9E9))
             )
 
-            ItemProfile(0xFFE9E9E9, R.drawable.ic_users, "Sevimli avtorlar")
-            ItemProfile(0xFFE9E9E9, R.drawable.ic_cart, "Buyurtmalar tarixi")
-            ItemProfile(0xFFE9E9E9, R.drawable.ic_notification_profile, "Xabarnomalar")
-            ItemProfile(0xFFE9E9E9, R.drawable.ic_language, "Ilova tili")
-            ItemProfile(0xFFE9E9E9, R.drawable.ic_night_mode, "Ilova mavzusi")
-            ItemProfile(0xFFE9E9E9, R.drawable.ic_about, "Biz xaqimida")
+            ItemProfile(0xFFE9E9E9, R.drawable.ic_users, "Sevimli avtorlar",viewModel::onEventDispatcherProfil )
+            ItemProfile(0xFFE9E9E9, R.drawable.ic_cart, "Buyurtmalar tarixi",viewModel::onEventDispatcherProfil)
+            ItemProfile(0xFFE9E9E9, R.drawable.ic_notification_profile, "Xabarnomalar",viewModel::onEventDispatcherProfil)
+            ItemProfile(0xFFE9E9E9, R.drawable.ic_language, "Ilova tili",viewModel::onEventDispatcherProfil)
+            ItemProfile(0xFFE9E9E9, R.drawable.ic_night_mode, "Ilova mavzusi",viewModel::onEventDispatcherProfil)
+            ItemProfile(0xFFE9E9E9, R.drawable.ic_about, "Biz xaqimida",viewModel::onEventDispatcherProfil)
 
             Box(
                 modifier = Modifier
@@ -177,23 +178,28 @@ class ProfileScreen : Screen {
                     .background(Color(0xFFE9E9E9))
             )
 
-            ItemProfile(0xFF1EE91E63, R.drawable.ic_log_out, "Akkountdan chiqish") // 0xFF1EE91E63
+            ItemProfile(0xFF1EE91E63, R.drawable.ic_log_out, "Akkountdan chiqish",viewModel::onEventDispatcherProfil) // 0xFF1EE91E63
 
 
         }
     }
 
     @Composable
-    fun ItemProfile(bgColor: Long, icon: Int, text: String) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = 15.dp,
-                    end = 15.dp,
-                )
-                .height(56.dp),
+    fun ItemProfile(bgColor: Long, icon: Int, text: String,onEventDispatcher:(ProfileIntent) -> Unit) {
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = 15.dp,
+                end = 15.dp,
+            ).clickable {
+                if(text == "Buyurtmalar tarixi"){
+                    onEventDispatcher.invoke(ProfileIntent.ClickOrder)
+                }
+            }
+            .height(56.dp),
             verticalAlignment = Alignment.CenterVertically
+
+
         ) {
 
             Box(
@@ -225,7 +231,7 @@ class ProfileScreen : Screen {
     @Composable
     private fun PreviewContent() {
         AsaxiyCompose2Theme {
-            ProfileContent({})
+//            ProfileContent({})
         }
     }
 }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.asaxiybooks.domain.AppRepository
 import com.example.asaxiycompose2.data.model.MyBooksUiData
 import com.example.asaxiycompose2.navigation.AppNavigator
+import com.example.asaxiycompose2.utils.myLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.launchIn
@@ -24,6 +25,7 @@ class MyBookViewModel @Inject constructor(
                 repository.getAllBooksFromRoom()
                     .onEach {
                         loadDataSharedFlow.emit(it)
+                        "My book Screen ViewModel "+ it.size.toString().myLog()
                     }
                     .launchIn(viewModelScope)
             }

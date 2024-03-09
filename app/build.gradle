@@ -152,6 +152,8 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.6.0")
 
+    implementation ("io.github.grizzi91:bouquet:1.1.2")
+
 //    implementation "com.github.bumptech.glide:glide:<version>"
 //    kapt "com.github.bumptech.glide:compiler:<version>"
 }

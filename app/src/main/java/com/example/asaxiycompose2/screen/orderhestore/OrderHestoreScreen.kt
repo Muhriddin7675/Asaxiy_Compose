@@ -1,5 +1,6 @@
-package com.example.asaxiycompose2.screen.allbook
+package com.example.asaxiycompose2.screen.orderhestore
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,17 +12,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -32,25 +37,33 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.hilt.getViewModel
 import coil.compose.AsyncImage
 import com.example.asaxiycompose2.R
-import com.example.asaxiycompose2.data.model.AudioDataForAdapter
 import com.example.asaxiycompose2.data.model.BookUIData
+import com.example.asaxiycompose2.screen.mybook.MyBookContent
 import com.example.asaxiycompose2.ui.theme.AsaxiyCompose2Theme
+import com.example.asaxiycompose2.utils.myLog
 
-class ByCategoryAllBookScreen(bookCate: AudioDataForAdapter) : Screen {
-    private val list = bookCate.list
-    private val categoryName = bookCate.categoryName
-
+class OrderHistoryScreen : Screen {
     @Composable
     override fun Content() {
-        val viewModel = getViewModel<AllBookViewModel>()
-
+        val viewModel = getViewModel<OrderViewModel>()
+        viewModel.onIntentDispatcher(OrderIntent.loadOrderScreen)
+        val list by viewModel.loadBuyBookList.collectAsState(initial = null)
+        val message by viewModel.errorMessage.collectAsState(initial = null)
+        if (message != null) {
+            Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
+        }
         AsaxiyCompose2Theme {
-            AllBooks(bookList = list, viewModel)
+            if (list == null || list!!.isEmpty()) {
+                OrderAllBooks(emptyList(), viewModel)
+            } else {
+                OrderAllBooks(list!!, viewModel)
+            }
+
         }
     }
 
     @Composable
-    fun AllBooks(bookList: List<BookUIData>, viewModel: AllBookViewModel) {
+    fun OrderAllBooks(bookList: List<BookUIData>, viewModel: OrderViewModel) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -69,7 +82,7 @@ class ByCategoryAllBookScreen(bookCate: AudioDataForAdapter) : Screen {
                     .height(56.dp)
             ) {
                 Text(
-                    text = list[0].categoryName,
+                    text = "Buyurtmalar tarixi",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier
@@ -82,7 +95,7 @@ class ByCategoryAllBookScreen(bookCate: AudioDataForAdapter) : Screen {
             LazyColumn {
 
                 items(bookList) { bookData ->
-                    BookCard(bookData, viewModel::onEventDispatcher)
+                    BookCard(bookData, viewModel::onIntentDispatcher)
                 }
             }
 
@@ -90,14 +103,14 @@ class ByCategoryAllBookScreen(bookCate: AudioDataForAdapter) : Screen {
     }
 
     @Composable
-    fun BookCard(bookData: BookUIData, onIntentDispatcher: (AllBookIntent) -> Unit) {
+    fun BookCard(bookData: BookUIData, onIntentDispatcher: (OrderIntent) -> Unit) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(160.dp)
                 .padding(start = 8.dp, end = 8.dp, top = 2.dp, bottom = 2.dp)
                 .clickable {
-                    onIntentDispatcher.invoke(AllBookIntent.ClickItem(bookData))
+                    onIntentDispatcher.invoke(OrderIntent.ClickItem(bookData))
                 }
                 .background(
                     Color.White, RoundedCornerShape(12.dp)
@@ -110,7 +123,8 @@ class ByCategoryAllBookScreen(bookCate: AudioDataForAdapter) : Screen {
             ) {
                 Box(
                     modifier = Modifier
-                        .size(100.dp)
+                        .height(130.dp)
+                        .width(90.dp)
                         .clip(RoundedCornerShape(10.dp))
                 ) {
                     AsyncImage(
@@ -154,14 +168,18 @@ class ByCategoryAllBookScreen(bookCate: AudioDataForAdapter) : Screen {
                     .align(Alignment.BottomEnd)
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.read_book),
+                    painter =
+                    if (bookData.type == "PDF") {
+                        painterResource(id = R.drawable.read_book)
+                    } else {
+                        painterResource(id = R.drawable.ic_audio)
+                    },
                     contentDescription = null,
                     modifier = Modifier
                         .size(24.dp)
                         .padding(4.dp)
                         .align(Alignment.Center),
                     colorFilter = ColorFilter.tint(Color(0xFFFF9800)),
-
                     )
             }
         }

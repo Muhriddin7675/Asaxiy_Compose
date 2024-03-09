@@ -21,7 +21,7 @@ class SplashViewModel @Inject constructor(
            SplashIntent.Intro -> {
                viewModelScope.launch {
                    delay(1000)
-                   navigator.navigate(IntroScreen())
+                   navigator.replace(IntroScreen())
                }
            }
         }

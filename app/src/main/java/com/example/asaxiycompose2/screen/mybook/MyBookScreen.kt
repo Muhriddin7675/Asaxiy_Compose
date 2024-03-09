@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,18 +33,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.hilt.getViewModel
+import coil.compose.AsyncImage
 import com.example.asaxiycompose2.R
 import com.example.asaxiycompose2.data.model.MyBooksUiData
 import com.example.asaxiycompose2.data.model.StatusEnum
 import com.example.asaxiycompose2.ui.theme.AsaxiyCompose2Theme
+import com.example.asaxiycompose2.utils.myLog
 
 class MyBookScreen : Screen {
     @Composable
     override fun Content() {
         val viewModel = getViewModel<MyBookViewModel>()
+        viewModel.onEventDispatcher(MyBookIntent.LoadData)
         val bookList by viewModel.loadDataSharedFlow.collectAsState(initial = null)
         if (bookList == null || bookList!!.isEmpty()) {
-            MyBookContent(bookList = emptyList())
         } else {
             MyBookContent(bookList = bookList!!)
         }
@@ -95,7 +98,7 @@ fun BookCard(bookData: MyBooksUiData) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(120.dp)
+            .height(160.dp)
             .padding(start = 8.dp, end = 8.dp, top = 2.dp, bottom = 2.dp)
             .background(Color.White, RoundedCornerShape(12.dp))
     ) {
@@ -105,13 +108,23 @@ fun BookCard(bookData: MyBooksUiData) {
         ) {
             Box(
                 modifier = Modifier
-                    .size(100.dp)
+                    .height(130.dp)
+                    .width(90.dp)
                     .clip(RoundedCornerShape(10.dp))
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.book_app_image),
-                    contentDescription = null,
+//                Image(
+//                    painter = painterResource(id = R.drawable.book_app_image),
+//                    contentDescription = null,
+//                    contentScale = ContentScale.Crop,
+//                )
+                AsyncImage( model = bookData.imagePath,
+                    placeholder = painterResource(id = R.drawable.book_app_image),
+                    error = painterResource(id = R.drawable.book_app_image),
                     contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(4.dp),
+                    contentDescription = null
                 )
             }
             Column(
