@@ -35,12 +35,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.example.asaxiycompose2.R
-import com.example.asaxiycompose2.data.model.BookUIData
+import com.example.asaxiycompose2.data.model.AudioPlayerData
 import com.example.asaxiycompose2.ui.theme.AsaxiyCompose2Theme
 import java.util.concurrent.TimeUnit
 
 
-class PlayScreen(data: BookUIData) : Screen {
+class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
     private val musicData = R.raw.taqiq
 
     @Composable
@@ -48,13 +48,12 @@ class PlayScreen(data: BookUIData) : Screen {
         PlayScreenContent()
     }
 
-    @Preview
-    @Composable
-    fun PlayPrev() {
-        AsaxiyCompose2Theme {
-            PlayScreenContent()
-        }
-    }
+//    @Composable
+//    fun PlayPrev() {
+//        AsaxiyCompose2Theme {
+//            PlayScreenContent()
+//        }
+//    }
 
     @Composable
     fun PlayScreenContent() {

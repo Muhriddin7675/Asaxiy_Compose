@@ -73,13 +73,6 @@ class BookInfoViewModel @Inject constructor(
 
                         is UploadBookData.SUCCESS -> {
                             errorMessage.emit("Success")
-                            onEventDispatcher(
-                                BookIntent.AddBookBuy(
-                                    data.bookName,
-                                    "pdf",
-                                    data.bookDocID
-                                )
-                            )
                             seekBarVisibility.emit(false)
                             onEventDispatcher(BookIntent.HasBookFromLocal(data.bookDocID))
                             onEventDispatcher(BookIntent.HasBookFromBuy(data.bookDocID, "pdf"))

@@ -27,7 +27,6 @@ interface AppRepository {
     fun hasBookFromLocal(docID: String): Flow<Result<Boolean>>
     fun downloadBook(data: BookUIData): Flow<UploadData>
     fun getDownloadedBook(data: BookUIData): Flow<File>
-
     fun bookHasBuyBooks(docID:String) : Flow<Result<Boolean>>
 
 
