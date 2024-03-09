@@ -1,5 +1,6 @@
 package com.example.asaxiycompose2.screen.book_info
 
+import android.widget.SeekBar
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,12 +19,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +47,7 @@ import com.example.asaxiycompose2.R
 import com.example.asaxiycompose2.data.model.BookUIData
 import com.example.asaxiycompose2.data.model.ProgressData
 import com.example.asaxiycompose2.ui.theme.AsaxiyCompose2Theme
+import com.example.asaxiycompose2.utils.myLog
 
 class BookInfoScreen(data: BookUIData) : Screen {
     private val bookData = data
@@ -60,11 +66,13 @@ class BookInfoScreen(data: BookUIData) : Screen {
         val progressData by viewModel.progress.collectAsState(initial = null)
         val isHasBookLocal by viewModel.isHasBookListener.collectAsState(initial = null)
         val isHasBookBuy by viewModel.isHasBookBuyBtn.collectAsState(initial = null)
+        val seekBarVisibility by viewModel.seekBarVisibility.collectAsState(initial = false)
 
         CustomComposeFunction(
             isHasBookLocal,
             isHasBookBuy,
             progressData,
+            seekBarVisibility,
             viewModel::onEventDispatcher
         )
     }
@@ -75,6 +83,7 @@ class BookInfoScreen(data: BookUIData) : Screen {
         isHasBookLocal: Boolean?,
         isHasBookBuy: Boolean?,
         progressData: ProgressData?,
+        seekBarVisibility: Boolean,
         onEventDispatcher: (BookIntent) -> Unit
     ) {
         Scaffold(
@@ -145,6 +154,9 @@ class BookInfoScreen(data: BookUIData) : Screen {
                                 .padding(start = 15.dp, end = 15.dp, top = 20.dp)
                                 .clip(RoundedCornerShape(10.dp))
                                 .height(56.dp)
+                                .clickable {
+                                    onEventDispatcher.invoke(BookIntent.AddBookBuy(bookData.bookName, type = "pdf",bookData.bookDocID))
+                                }
                                 .background(Color(0xFF37417A))
 
                         ) {
@@ -187,16 +199,30 @@ class BookInfoScreen(data: BookUIData) : Screen {
                             )
                         }
                     }
-                    if (isHasBookLocal != true && isHasBookBuy == true) {
-                        Text(
-                            text = progressData?.progress ?: "",
-                            fontSize = 22.sp,
-                            modifier = Modifier
-                                .align(Alignment.Start)
-                                .padding(start = 16.dp, top = 24.dp, bottom = 16.dp),
-                            fontFamily = FontFamily(Font(R.font.nunito_bold)),
-                            color = Color.Gray
-                        )
+
+                    if (seekBarVisibility) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            Text(
+                                text = progressData!!.progress,
+                                fontSize = 22.sp,
+                                modifier = Modifier
+                                    .align(Alignment.Start)
+                                    .padding(start = 16.dp, top = 24.dp, bottom = 24.dp),
+                                fontFamily = FontFamily(Font(R.font.nunito_bold)),
+                                color = Color.Black
+                            )
+                            "Porogress" + progressData.seekBar.toString().myLog()
+                            var sliderPosition by remember { mutableStateOf(progressData.seekBar) }
+
+                            Slider(
+                                modifier = Modifier.padding(horizontal = 8.dp),
+                                value = sliderPosition,
+                                onValueChange = { newValue ->
+                                    sliderPosition = newValue
+                                },
+                                // Disable user interaction with the slider
+                            )
+                        }
                     }
 
                     Text(

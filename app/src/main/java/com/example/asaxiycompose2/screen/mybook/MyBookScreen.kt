@@ -2,6 +2,7 @@ package com.example.asaxiycompose2.screen.mybook
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,10 +36,10 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.hilt.getViewModel
 import coil.compose.AsyncImage
 import com.example.asaxiycompose2.R
+import com.example.asaxiycompose2.data.model.BookUIData
 import com.example.asaxiycompose2.data.model.MyBooksUiData
 import com.example.asaxiycompose2.data.model.StatusEnum
 import com.example.asaxiycompose2.ui.theme.AsaxiyCompose2Theme
-import com.example.asaxiycompose2.utils.myLog
 
 class MyBookScreen : Screen {
     @Composable
@@ -48,13 +49,13 @@ class MyBookScreen : Screen {
         val bookList by viewModel.loadDataSharedFlow.collectAsState(initial = null)
         if (bookList == null || bookList!!.isEmpty()) {
         } else {
-            MyBookContent(bookList = bookList!!)
+            MyBookContent(bookList = bookList!!, viewModel)
         }
     }
 }
 
 @Composable
-fun MyBookContent(bookList: List<MyBooksUiData>) {
+fun MyBookContent(bookList: List<MyBooksUiData>, viewModel: MyBookViewModel) {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -86,7 +87,7 @@ fun MyBookContent(bookList: List<MyBooksUiData>) {
         LazyColumn {
 
             items(bookList) { bookData ->
-                BookCard(bookData)
+                BookCard(bookData, viewModel::onEventDispatcher)
             }
         }
 
@@ -94,12 +95,29 @@ fun MyBookContent(bookList: List<MyBooksUiData>) {
 }
 
 @Composable
-fun BookCard(bookData: MyBooksUiData) {
+fun BookCard(bookData: MyBooksUiData, onEventDispatcher: (MyBookIntent) -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(160.dp)
             .padding(start = 8.dp, end = 8.dp, top = 2.dp, bottom = 2.dp)
+            .clickable {
+                val data =    BookUIData(
+                    bookDocID = bookData.docId,
+                    bookName = bookData.bookName,
+                    bookAuthor = bookData.bookAuthor,
+                    bookImage = bookData.imagePath,
+                    bookDescription = bookData.description,
+                    bookSize = bookData.bookSize,
+                    bookPath = bookData.bookPath,
+                    categoryName = "",
+                    category = "",
+                    type = bookData.status.name,
+                )
+                onEventDispatcher.invoke(
+                    MyBookIntent.ClickItem(data)
+                )
+            }
             .background(Color.White, RoundedCornerShape(12.dp))
     ) {
         Row(
@@ -117,7 +135,8 @@ fun BookCard(bookData: MyBooksUiData) {
 //                    contentDescription = null,
 //                    contentScale = ContentScale.Crop,
 //                )
-                AsyncImage( model = bookData.imagePath,
+                AsyncImage(
+                    model = bookData.imagePath,
                     placeholder = painterResource(id = R.drawable.book_app_image),
                     error = painterResource(id = R.drawable.book_app_image),
                     contentScale = ContentScale.Crop,

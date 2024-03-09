@@ -10,6 +10,7 @@ import com.example.asaxiycompose2.screen.book_info.BookIntent.AddBookBuy
 import com.example.asaxiycompose2.utils.myLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -26,6 +27,7 @@ class BookInfoViewModel @Inject constructor(
     val errorMessage = MutableSharedFlow<String>()
     val isHasBookBuyBtn = MutableSharedFlow<Boolean>()
     val progress = MutableSharedFlow<ProgressData>()
+    val seekBarVisibility = MutableStateFlow(false)
     fun onEventDispatcher(intent: BookIntent) {
         when (intent) {
             BookIntent.clickBack -> {
@@ -37,7 +39,7 @@ class BookInfoViewModel @Inject constructor(
             is BookIntent.ClickDownlandButton -> {
                 val data = intent.data
                 repository.downloadBookPdf(data).onEach {
-
+                 seekBarVisibility.emit(true)
                     when (it) {
                         UploadBookData.CANCEL -> {
                             errorMessage.emit("CANCEL")
@@ -64,7 +66,7 @@ class BookInfoViewModel @Inject constructor(
                             progress.emit(
                                 ProgressData(
                                     progress = "${uploadBytes}/${totalBytes} KB   ${it.uploadBytes * 100 / it.totalBytes}%",
-                                    seekBar = (it.uploadBytes * 100 / it.totalBytes).toInt()
+                                    seekBar = (it.uploadBytes  / it.totalBytes).toFloat()
                                 )
                             )
                         }
@@ -78,6 +80,7 @@ class BookInfoViewModel @Inject constructor(
                                     data.bookDocID
                                 )
                             )
+                            seekBarVisibility.emit(false)
                             onEventDispatcher(BookIntent.HasBookFromLocal(data.bookDocID))
                             onEventDispatcher(BookIntent.HasBookFromBuy(data.bookDocID, "pdf"))
                         }
