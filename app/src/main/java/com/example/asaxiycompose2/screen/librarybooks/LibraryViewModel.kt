@@ -9,6 +9,7 @@ import com.example.asaxiycompose2.screen.allbook.ByCategoryAllBookScreen
 import com.example.asaxiycompose2.screen.book_info.BookInfoScreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -21,7 +22,7 @@ class LibraryViewModel @Inject constructor(
 ) : ViewModel() {
     val loadCategoryBookList = MutableSharedFlow<List<AudioDataForAdapter>>()
     val errorMessage = MutableSharedFlow<String>()
-    val progress = MutableSharedFlow<Boolean>()
+    val progress = MutableStateFlow(false)
 
     fun onEventDispatcherLibrary(intent: LibraryIntent) {
         when (intent) {

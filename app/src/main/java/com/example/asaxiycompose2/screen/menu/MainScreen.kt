@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.hilt.getViewModel
 import cafe.adriel.voyager.navigator.tab.CurrentTab
@@ -30,6 +31,7 @@ import com.example.asaxiycompose2.screen.librarybooks.LibraryScreen
 import com.example.asaxiycompose2.screen.mybook.MyBookScreen
 import com.example.asaxiycompose2.screen.profile.ProfileScreen
 import com.example.asaxiycompose2.ui.theme.AsaxiyCompose2Theme
+import com.rizzi.bouquet.dp
 
 
 class MainScreen : Screen {
@@ -51,7 +53,11 @@ private fun MainContent(eventDispatcher: (MainIntent) -> Unit) {
                     }
                 },
                 bottomBar = {
-                    BottomNavigation {
+                    BottomNavigation(
+                        backgroundColor = Color.White, // Background color of BottomNavigation
+                        contentColor = Color.Gray, // Color of unselected items
+                        elevation = 8.dp
+                    ) {
                         TabNavigationItem(HomeTab)
                         TabNavigationItem(BooksTab)
                         TabNavigationItem(AudioTab)
@@ -89,13 +95,16 @@ object HomeTab : Tab {
 
     @Composable
     override fun Content() {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)) {
-          MyBookScreen().Content()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+        ) {
+            MyBookScreen().Content()
         }
     }
 }
+
 object BooksTab : Tab {
     override val options: TabOptions
         @Composable
@@ -114,13 +123,16 @@ object BooksTab : Tab {
 
     @Composable
     override fun Content() {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)) {
-       LibraryScreen().Content()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+        ) {
+            LibraryScreen().Content()
         }
     }
 }
+
 object AudioTab : Tab {
     override val options: TabOptions
         @Composable
@@ -139,13 +151,16 @@ object AudioTab : Tab {
 
     @Composable
     override fun Content() {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)) {
-           AudioScreen().Content()
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+        ) {
+            AudioScreen().Content()
         }
     }
 }
+
 object ProfileTab : Tab {
     override val options: TabOptions
         @Composable
@@ -164,9 +179,11 @@ object ProfileTab : Tab {
 
     @Composable
     override fun Content() {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+        ) {
             ProfileScreen().Content()
         }
     }

@@ -66,7 +66,7 @@ class AudioInfoViewModel @Inject constructor(
                             progress.emit(
                                 ProgressData(
                                     progress = "${uploadBytes}/${totalBytes} KB   ${it.uploadBytes * 100 / it.totalBytes}%",
-                                    seekBar = (it.uploadBytes / it.totalBytes).toFloat()
+                                    seekBar = (it.uploadBytes.toFloat() / it.totalBytes)
                                 )
                             )
                         }
@@ -86,8 +86,9 @@ class AudioInfoViewModel @Inject constructor(
                 val type = intent.type
                 val bookDocId = intent.bookDocId
                 repository.addBookBuy(bookName, "audio", bookDocId).onEach {
-                    it.onSuccess {}
-                        .onFailure {}
+                    it.onSuccess {
+                        onEventDispatcher(AudioIntent.HasAudioFromBuy(intent.bookDocId,"audio"))
+                    }.onFailure {}
                 }.launchIn(viewModelScope)
             }
 

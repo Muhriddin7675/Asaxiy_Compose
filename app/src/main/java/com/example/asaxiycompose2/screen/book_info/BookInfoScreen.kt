@@ -117,13 +117,7 @@ class BookInfoScreen(data: BookUIData) : Screen {
                         .background(Color.White),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-//                    Image(
-//                        painter = painterResource(id = R.drawable.dunyoning_ishlari),
-//                        contentDescription = null,
-//                        Modifier
-//                            .size(176.dp, 224.dp)
-//                            .padding(top = 20.dp)
-//                    )
+
                     AsyncImage(
                         model = bookData.bookImage,
                         placeholder = painterResource(id = R.drawable.book_app_image),
@@ -155,7 +149,13 @@ class BookInfoScreen(data: BookUIData) : Screen {
                                 .clip(RoundedCornerShape(10.dp))
                                 .height(56.dp)
                                 .clickable {
-                                    onEventDispatcher.invoke(BookIntent.AddBookBuy(bookData.bookName, type = "pdf",bookData.bookDocID))
+                                    onEventDispatcher.invoke(
+                                        BookIntent.AddBookBuy(
+                                            bookData.bookName,
+                                            type = "pdf",
+                                            bookData.bookDocID
+                                        )
+                                    )
                                 }
                                 .background(Color(0xFF37417A))
 
@@ -211,14 +211,14 @@ class BookInfoScreen(data: BookUIData) : Screen {
                                 fontFamily = FontFamily(Font(R.font.nunito_bold)),
                                 color = Color.Black
                             )
-                            "Porogress" + progressData.seekBar.toString().myLog()
-                            var sliderPosition by remember { mutableStateOf(progressData.seekBar) }
+//                            "Porogress" + progressData.seekBar.toString().myLog()
+//                            var sliderPosition by remember { mutableStateOf(progressData.seekBar) }
 
                             Slider(
                                 modifier = Modifier.padding(horizontal = 8.dp),
-                                value = sliderPosition,
+                                value = progressData.seekBar,
                                 onValueChange = { newValue ->
-                                    sliderPosition = newValue
+                                    progressData.seekBar = newValue
                                 },
                                 // Disable user interaction with the slider
                             )

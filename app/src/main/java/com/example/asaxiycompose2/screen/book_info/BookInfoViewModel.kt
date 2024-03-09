@@ -62,11 +62,11 @@ class BookInfoViewModel @Inject constructor(
                             val totalBytes = it.totalBytes / 1024
 
                             "${uploadBytes}/${totalBytes} KB   ${it.uploadBytes * 100 / it.totalBytes}%".myLog()
-                            "${it.uploadBytes * 100 / it.totalBytes}".myLog()
+                            "${it.uploadBytes * 0.1 / it.totalBytes}".myLog()
                             progress.emit(
                                 ProgressData(
                                     progress = "${uploadBytes}/${totalBytes} KB   ${it.uploadBytes * 100 / it.totalBytes}%",
-                                    seekBar = (it.uploadBytes  / it.totalBytes).toFloat()
+                                    seekBar = (it.uploadBytes.toFloat() / it.totalBytes)
                                 )
                             )
                         }
@@ -88,10 +88,10 @@ class BookInfoViewModel @Inject constructor(
                 repository.addBookBuy(bookName, type, bookDocId)
                     .onEach { result ->
                         result.onSuccess {
-                            errorMessage.emit("You bought the book !")
+//                            errorMessage.emit("You bought the book !")
                         }
                         result.onFailure {
-                            errorMessage.emit(it.message.toString())
+//                            errorMessage.emit(it.message.toString())
                         }
                     }
                     .launchIn(viewModelScope)
@@ -100,11 +100,11 @@ class BookInfoViewModel @Inject constructor(
             is BookIntent.HasBookFromBuy -> {
                 val bookDocId = intent.bookId
                 val type = intent.type
-                "getBookBuy $bookDocId".myLog()
+//                "getBookBuy $bookDocId".myLog()
                 repository.getBooksBuy(bookDocId, type)
                     .onEach { result ->
                         result.onSuccess {
-                            "getBookBuySucses $it".myLog()
+//                            "getBookBuySucses $it".myLog()
                             isHasBookBuyBtn.emit(it)
                         }
                         result.onFailure {
@@ -118,13 +118,11 @@ class BookInfoViewModel @Inject constructor(
                 val docID = intent.bookId
                 repository.hasBookFromLocalPdf(docID)
                     .onEach { result ->
-
                         result.onSuccess {
-                            "Book Has local method result : $it".myLog()
+//                            "Book Has local method result : $it".myLog()
                             isHasBookListener.emit(it)
                         }
                         result.onFailure {
-
                             errorMessage.emit(it.message.toString())
                         }
                     }
