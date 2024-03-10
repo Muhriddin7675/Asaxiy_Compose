@@ -72,6 +72,7 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
 
     @Composable
     override fun Content() {
+        mediaPlayer.release()
         mediaPlayer = MediaPlayer.create(LocalContext.current, musicData.file.toUri())
         PlayScreenContent()
     }
@@ -227,7 +228,9 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
                             if (mediaPlayer.isPlaying) {
                                 job?.cancel()
                                 mediaPlayer.seekTo(MyEventBus.currentTime.value)
-                                job = moveProgress().onEach { MyEventBus.currentTimeFlow.emit(it) }
+                                job = moveProgress().onEach {
+                                    MyEventBus.currentTimeFlow.emit(it)
+                                }
                                     .launchIn(scope)
                             } else {
                                 mediaPlayer.seekTo(MyEventBus.currentTime.value)
@@ -320,9 +323,7 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
                                     } else {
                                         mediaPlayer.seekTo(MyEventBus.currentTime.value)
                                         mediaPlayer.setOnCompletionListener {
-//                                            Toast
-//                                                .makeText(context, "Qo'shiq tugadi", Toast.LENGTH_SHORT)
-//                                                .show()
+                                           manageState = 0
                                         }
                                         job?.cancel()
                                         job = moveProgress()
