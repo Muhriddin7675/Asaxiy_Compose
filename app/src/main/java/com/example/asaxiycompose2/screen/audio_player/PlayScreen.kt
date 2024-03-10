@@ -1,6 +1,9 @@
 package com.example.asaxiycompose2.screen.audio_player
 
+import android.annotation.SuppressLint
 import android.media.MediaPlayer
+import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,7 +24,9 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,12 +48,27 @@ import cafe.adriel.voyager.core.screen.Screen
 import coil.compose.AsyncImage
 import com.example.asaxiycompose2.R
 import com.example.asaxiycompose2.data.model.AudioPlayerData
+import com.example.asaxiycompose2.utils.MyEventBus
+import com.example.asaxiycompose2.utils.getTime
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import java.util.concurrent.TimeUnit
+import kotlin.math.log
 
 
 class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
     private val musicData = audioPlayerData
     private lateinit var mediaPlayer: MediaPlayer
+    private val scope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())
+    private var job: Job? = null
 
     @Composable
     override fun Content() {
@@ -63,6 +83,7 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
 //        }
 //    }
 
+    @SuppressLint("LogNotTimber")
     @Composable
     fun PlayScreenContent() {
 
@@ -76,6 +97,7 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
         else "%02d:%02d:%02d".format(hours, minutes, seconds) // 03:45
 
         val isSaved by remember { mutableStateOf(false) }
+        MyEventBus.totalTime = mediaPlayer.duration
 
         val leftColor = Color(0xFF3F51B5)
         Column(
@@ -176,21 +198,45 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
                     )
                     Spacer(modifier = Modifier.height(56.dp))
 
+                    val seekBarState = MyEventBus.currentTimeFlow.collectAsState(initial = 0)
+                    var seekBarValue by remember { mutableIntStateOf(seekBarState.value) }
 
-                    var stateSlider by remember { mutableStateOf(0.1f) }
+
                     Slider(
                         modifier = Modifier.padding(horizontal = 8.dp),
-//                        value = seekBarState.value.toFloat(),
-                        value = 0f,
+                        value = seekBarValue.toFloat(),
                         onValueChange = { newState ->
-//                            seekBarValue = newState.toInt()
-//                            onEventDispatcher.invoke(PlayContract.Intent.UserAction(CommandEnum.UPDATE_SEEKBAR))
+                            seekBarValue = newState.toInt()
+                            if (mediaPlayer.isPlaying) {
+                                job?.cancel()
+                                mediaPlayer.seekTo(MyEventBus.currentTime.value)
+                                job = moveProgress().onEach {
+                                    MyEventBus.currentTimeFlow.emit(it)
+                                }
+                                    .launchIn(scope)
+                            } else {
+                                mediaPlayer.seekTo(MyEventBus.currentTime.value)
+                                job = moveProgress().onEach {
+                                    MyEventBus.currentTimeFlow.emit(it) }
+                                    .launchIn(scope)
+                                job?.cancel()
+                            }
                         },
                         onValueChangeFinished = {
-//                            MyEventBus.currentTime.value = seekBarValue
-//                            onEventDispatcher.invoke(PlayContract.Intent.UserAction(CommandEnum.UPDATE_SEEKBAR))
+                            MyEventBus.currentTime.value = seekBarValue
+                            if (mediaPlayer.isPlaying) {
+                                job?.cancel()
+                                mediaPlayer.seekTo(MyEventBus.currentTime.value)
+                                job = moveProgress().onEach { MyEventBus.currentTimeFlow.emit(it) }
+                                    .launchIn(scope)
+                            } else {
+                                mediaPlayer.seekTo(MyEventBus.currentTime.value)
+                                job = moveProgress().onEach { MyEventBus.currentTimeFlow.emit(it) }
+                                    .launchIn(scope)
+                                job?.cancel()
+                            }
                         },
-//                        valueRange = 0f..musicData.value!!.duration.toFloat(),
+                        valueRange = 0f..mediaPlayer.duration.toFloat(),
                         steps = 1000,
                         colors = SliderDefaults.colors(
                             thumbColor = Color(0xFFa8dadc),
@@ -212,7 +258,7 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
                             modifier = Modifier
                                 .width(0.dp)
                                 .weight(1f),
-                            text = "00:00"
+                            text = getTime(seekBarState.value / 1000)
                         )
                         Text(
                             modifier = Modifier
@@ -264,15 +310,31 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
                                 .clickable {
                                     manageState = if (mediaPlayer.isPlaying) {
                                         mediaPlayer.pause()
+                                        MyEventBus.currentTime.value =
+                                            MyEventBus.currentTimeFlow.value
+                                        mediaPlayer.seekTo(MyEventBus.currentTime.value)
+                                        job?.cancel()
+                                        scope.launch { MyEventBus.isPlaying.emit(false) }
                                         0
 
                                     } else {
+                                        mediaPlayer.seekTo(MyEventBus.currentTime.value)
+                                        mediaPlayer.setOnCompletionListener {
+//                                            Toast
+//                                                .makeText(context, "Qo'shiq tugadi", Toast.LENGTH_SHORT)
+//                                                .show()
+                                        }
+                                        job?.cancel()
+                                        job = moveProgress()
+                                            .onEach { MyEventBus.currentTimeFlow.emit(it) }
+                                            .launchIn(scope)
+                                        scope.launch { MyEventBus.isPlaying.emit(true) }
                                         mediaPlayer.start()
                                         1
                                     }
                                 },
                             painter = painterResource(
-                                id  = if(manageState == 0) R.drawable.ic_play else R.drawable.ic_pause
+                                id = if (manageState == 0) R.drawable.ic_play else R.drawable.ic_pause
                             ),
                             contentDescription = null
                         )
@@ -298,6 +360,16 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
                     }
                 }
             }
+        }
+
+    }
+
+    private fun moveProgress(): Flow<Int> = flow {
+        Log.d("TTT", "moveProgress: Total ${MyEventBus.totalTime}")
+        for (i in MyEventBus.currentTime.value until MyEventBus.totalTime step 1000) {
+            Log.d("EMIT", "moveProgress: emit value $i")
+            emit(i)
+            delay(1000)
         }
     }
 }

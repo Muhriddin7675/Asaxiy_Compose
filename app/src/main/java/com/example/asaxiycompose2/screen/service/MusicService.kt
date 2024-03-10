@@ -28,6 +28,7 @@ class MusicService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
     private val scope = CoroutineScope(Dispatchers.Main.immediate + SupervisorJob())
+
     private var job: Job? = null
 
     override fun onCreate() {
@@ -127,7 +128,7 @@ class MusicService : Service() {
 //            }
 //
 //            CommandEnum.CONTINUE -> {
-//                job = moveProgress().onEach { MyEventBus.currentTimeFlow.emit(it) }.l<aunchIn(scope)
+//                job = moveProgress().onEach { MyEventBus.currentTimeFlow.emit(it) }.launchIn(scope)
 //                musicPlayer.seekTo(MyEventBus.currentTime.value)
 //                scope.launch { MyEventBus.isPlaying.emit(true) }
 //                musicPlayer.start()

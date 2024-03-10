@@ -303,6 +303,7 @@
 //                        seekBarValue = newState.toInt()
 //                        onEventDispatcher.invoke(PlayContract.Intent.UserAction(CommandEnum.UPDATE_SEEKBAR))
 //                    },
+
 //                    onValueChangeFinished = {
 //                        MyEventBus.currentTime.value = seekBarValue
 //                        onEventDispatcher.invoke(PlayContract.Intent.UserAction(CommandEnum.UPDATE_SEEKBAR))
@@ -339,6 +340,7 @@
 //                        textAlign = TextAlign.End,
 //                        text = duration
 //                    )
+
 //                }
 //
 //
