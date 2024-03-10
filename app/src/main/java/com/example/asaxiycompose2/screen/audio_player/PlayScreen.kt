@@ -1,5 +1,6 @@
 package com.example.asaxiycompose2.screen.audio_player
 
+import android.media.MediaPlayer
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,9 +17,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Slider
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -27,24 +31,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import cafe.adriel.voyager.core.screen.Screen
+import coil.compose.AsyncImage
 import com.example.asaxiycompose2.R
 import com.example.asaxiycompose2.data.model.AudioPlayerData
-import com.example.asaxiycompose2.ui.theme.AsaxiyCompose2Theme
 import java.util.concurrent.TimeUnit
 
 
 class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
-    private val musicData = R.raw.taqiq
+    private val musicData = audioPlayerData
+    private lateinit var mediaPlayer: MediaPlayer
 
     @Composable
     override fun Content() {
+        mediaPlayer = MediaPlayer.create(LocalContext.current, musicData.file.toUri())
         PlayScreenContent()
     }
 
@@ -58,8 +66,8 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
     @Composable
     fun PlayScreenContent() {
 
-        val milliseconds = 1000L
-        val hours = TimeUnit.MILLISECONDS.toHours(milliseconds)
+        val milliseconds = mediaPlayer.duration
+        val hours = TimeUnit.MILLISECONDS.toHours(milliseconds.toLong())
         val minutes = (milliseconds / 1000 / 60) % 60
         val seconds = (milliseconds / 1000) % 60
         val rightColor = Color(0xFF3F51B5)
@@ -106,14 +114,15 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
                         .align(Alignment.CenterHorizontally)
 
                 ) {
-
-                    Image(
+                    AsyncImage(
+                        model = musicData.bookUIData.bookImage,
+                        placeholder = painterResource(id = R.drawable.book_app_image),
+                        error = painterResource(id = R.drawable.book_app_image),
+                        contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(250.dp)
                             .align(Alignment.Center),
-                        painter = painterResource(id = R.drawable.dunyoning_ishlari),
-
-                        contentDescription = null,
+                        contentDescription = null
                     )
                     Spacer(
                         modifier = Modifier
@@ -150,7 +159,7 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp, vertical = 8.dp),
-                        text = "Title" ?: "Unknown",
+                        text = musicData.bookUIData.bookName,
                         fontSize = 20.sp,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1
@@ -161,18 +170,36 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp, vertical = 4.dp),
-                        text = "Artist" ?: "-- -- --",
+                        text = musicData.bookUIData.bookAuthor,
                         fontSize = 18.sp,
-                        color = Color.White
+                        color = Color.Black
                     )
                     Spacer(modifier = Modifier.height(56.dp))
 
 
                     var stateSlider by remember { mutableStateOf(0.1f) }
-                    androidx.compose.material.Slider(
-                        stateSlider, { stateSlider = it },
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                    Slider(
+                        modifier = Modifier.padding(horizontal = 8.dp),
+//                        value = seekBarState.value.toFloat(),
+                        value = 100f,
+                        onValueChange = { newState ->
+//                            seekBarValue = newState.toInt()
+//                            onEventDispatcher.invoke(PlayContract.Intent.UserAction(CommandEnum.UPDATE_SEEKBAR))
+                        },
+                        onValueChangeFinished = {
+//                            MyEventBus.currentTime.value = seekBarValue
+//                            onEventDispatcher.invoke(PlayContract.Intent.UserAction(CommandEnum.UPDATE_SEEKBAR))
+                        },
+//                        valueRange = 0f..musicData.value!!.duration.toFloat(),
+                        steps = 1000,
+                        colors = SliderDefaults.colors(
+                            thumbColor = Color(0xFFa8dadc),
+                            activeTickColor = Color(0xFFFFFFFF),
+                            activeTrackColor = Color(0xFFCCC2C2),
+                            inactiveTickColor = Color.Gray,
+                            inactiveTrackColor = Color.Transparent
+
+                        )
                     )
 
                     Row(
@@ -185,7 +212,7 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
                             modifier = Modifier
                                 .width(0.dp)
                                 .weight(1f),
-                            text = "03:45"
+                            text = duration
                         )
                         Text(
                             modifier = Modifier
@@ -229,12 +256,23 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
                             contentDescription = null
                         )
 
+                        var manageState by remember { mutableIntStateOf(0) }
                         Image(
                             modifier = Modifier
                                 .size(60.dp)
-                                .clip(RoundedCornerShape(50)),
+                                .clip(RoundedCornerShape(50))
+                                .clickable {
+                                    manageState = if (mediaPlayer.isPlaying) {
+                                        mediaPlayer.pause()
+                                        0
+
+                                    } else {
+                                        mediaPlayer.start()
+                                        1
+                                    }
+                                },
                             painter = painterResource(
-                                id = R.drawable.ic_play
+                                id  = if(manageState == 0) R.drawable.ic_play else R.drawable.ic_pause
                             ),
                             contentDescription = null
                         )

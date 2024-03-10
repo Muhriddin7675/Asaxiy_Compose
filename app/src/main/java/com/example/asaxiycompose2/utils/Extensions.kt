@@ -1,9 +1,14 @@
 package com.example.asaxiycompose2.utils
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
+import android.os.Build
 import android.widget.SeekBar
+import com.example.asaxiycompose2.data.model.CommandEnum
+import com.example.asaxiycompose2.screen.service.MusicService
 import java.text.DecimalFormat
 import java.text.DecimalFormatSymbols
 import java.text.SimpleDateFormat
@@ -17,6 +22,13 @@ class Extensions{
         fun formatBalance(value: Long): String = dfBalance.format(value).replace(',', ' ')
 
     }
+}
+fun startMusicService(context: Context, commandEnum: CommandEnum) {
+    val intent = Intent(context, MusicService::class.java)
+    intent.putExtra("COMMAND", commandEnum)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        context.startForegroundService(intent)
+    } else context.startService(intent)
 }
 fun String.removeSpace(): String = this.replace("\\s+".toRegex(), "")
 

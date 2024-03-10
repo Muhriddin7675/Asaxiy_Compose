@@ -154,6 +154,11 @@ dependencies {
 
     implementation ("io.github.grizzi91:bouquet:1.1.2")
 
+    //orbit
+    // MVI orbit
+    implementation("org.orbit-mvi:orbit-viewmodel:4.6.1")
+    implementation("org.orbit-mvi:orbit-compose:4.6.1")
+
 //    implementation "com.github.bumptech.glide:glide:<version>"
 //    kapt "com.github.bumptech.glide:compiler:<version>"
 }

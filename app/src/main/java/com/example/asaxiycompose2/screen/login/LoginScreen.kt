@@ -51,8 +51,8 @@ class LoginScreen : Screen {
 
     @Composable
     fun LoginContent(eventDispatcher: (LoginIntent) -> Unit) {
-        var email by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
+        var email by remember { mutableStateOf("abd9730@gmail.com") }
+        var password by remember { mutableStateOf("12345678") }
 
         val prevButtonVisible = remember {
             derivedStateOf {
