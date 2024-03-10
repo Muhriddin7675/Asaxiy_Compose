@@ -15,14 +15,13 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -43,9 +42,7 @@ import coil.compose.AsyncImage
 import com.example.asaxiycompose2.R
 import com.example.asaxiycompose2.data.model.AudioDataForAdapter
 import com.example.asaxiycompose2.data.model.BookUIData
-import com.example.asaxiycompose2.screen.librarybooks.LibraryIntent
 import com.example.asaxiycompose2.ui.theme.AsaxiyCompose2Theme
-import kotlin.reflect.KFunction1
 
 class AudioScreen() : Screen {
     @Composable
@@ -55,29 +52,29 @@ class AudioScreen() : Screen {
         viewModel.onEventDispatcherAudio(AudioIntent.GetAllCategoryList)
 
         val categoryList by viewModel.loadCategoryBookList.collectAsState(initial = null)
-        val progress by viewModel.progress.collectAsState(initial = null)
+        val progress = viewModel.progress.collectAsState()
         val message by viewModel.errorMessage.collectAsState(initial = null)
         if (message != null) {
             Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
         }
-        categoryList?.let { AudioContent(it,  viewModel) }
+        if (categoryList == null || categoryList!!.isEmpty()) {
+            AudioContent(emptyList(), viewModel, progress)
+        } else {
+            AudioContent(categoryList!!, viewModel, progress)
+        }
     }
+
 }
+
 
 @Composable
 fun AudioContent(
     list: List<AudioDataForAdapter>,
     viewModel: AudioViewModel,
+    progress: State<Boolean>
+) {
+    val context = LocalContext.current
 
-    ) {
-    var progress by remember { mutableStateOf(0.0f) }
-
-    LaunchedEffect(key1 = true) {
-        // Progressni o'zgartirish uchun misol shu jumladan foydalanishingiz mumkin
-        for (i in 0..100) {
-            progress = i / 100f
-        }
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -99,23 +96,27 @@ fun AudioContent(
             )
 
         }
+
+//            if (progress.value) {
+//                Box(modifier = Modifier.fillMaxSize()) {
+//                    CircularProgressIndicator(
+//                        modifier = Modifier
+//                            .width(60.dp)
+//                            .height(60.dp)
+//                            .align(Alignment.Center),
+//                        color = Color.Gray,
+//                        strokeWidth = 5.dp
+//                    )
+//                }
+//            }
+
+
         LazyColumn {
-
             items(list) { byCategory ->
-                categoryItem(ls = byCategory,viewModel::onEventDispatcherAudio)
+                categoryItem(ls = byCategory, viewModel::onEventDispatcherAudio)
             }
-
-
         }
     }
-//    Box(modifier = Modifier.fillMaxSize()) {
-//        CircularProgressIndicator(
-//            progress = progress,
-//            color = Color.Blue, // Progress rangi
-//            strokeWidth = 6.dp, // Progress chiziqi kengligi
-//            modifier = Modifier.align(Alignment.Center)
-//        )
-//    }
 }
 
 
@@ -139,7 +140,8 @@ fun bookItem(bookUIData: BookUIData, modifier: Modifier) {
                     shape = RoundedCornerShape(topEnd = 12.dp, topStart = 12.dp)
                 )
         ) {
-            AsyncImage( model = bookUIData.bookImage,
+            AsyncImage(
+                model = bookUIData.bookImage,
                 placeholder = painterResource(id = R.drawable.book_app_image),
                 error = painterResource(id = R.drawable.book_app_image),
                 contentScale = ContentScale.Crop,
@@ -225,7 +227,7 @@ fun categoryItem(ls: AudioDataForAdapter, onEventDispatcher: (AudioIntent) -> Un
         }
 
         LazyRow {
-            items(ls.list) { bookData->
+            items(ls.list) { bookData ->
                 bookItem(bookData, Modifier
                     .width(160.dp)
                     .height(300.dp)

@@ -88,7 +88,7 @@ class LoginScreen : Screen {
             )
             Spacer(modifier = Modifier.height(64.dp))
             Text(
-                text = "E-mailinginzni kiriting",
+                text = "E-mailingizni kiriting",
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(start = 16.dp),
@@ -105,7 +105,7 @@ class LoginScreen : Screen {
             Spacer(modifier = Modifier.height(28.dp))
 
             Text(
-                text = "Paronlinginzni kiriting",
+                text = "Paronlingizni kiriting",
                 fontWeight = FontWeight.Bold,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(start = 16.dp),

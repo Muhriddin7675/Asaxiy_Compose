@@ -48,7 +48,9 @@ class MyBookScreen : Screen {
         viewModel.onEventDispatcher(MyBookIntent.LoadData)
         val bookList by viewModel.loadDataSharedFlow.collectAsState(initial = null)
         if (bookList == null || bookList!!.isEmpty()) {
-        } else {
+            MyBookContent(bookList = emptyList(), viewModel = viewModel)
+        }
+        else {
             MyBookContent(bookList = bookList!!, viewModel)
         }
     }
@@ -102,7 +104,7 @@ fun BookCard(bookData: MyBooksUiData, onEventDispatcher: (MyBookIntent) -> Unit)
             .height(160.dp)
             .padding(start = 8.dp, end = 8.dp, top = 2.dp, bottom = 2.dp)
             .clickable {
-                val data =    BookUIData(
+                val data = BookUIData(
                     bookDocID = bookData.docId,
                     bookName = bookData.bookName,
                     bookAuthor = bookData.bookAuthor,

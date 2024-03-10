@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,6 +44,7 @@ import coil.compose.AsyncImage
 import com.example.asaxiycompose2.R
 import com.example.asaxiycompose2.data.model.AudioDataForAdapter
 import com.example.asaxiycompose2.data.model.BookUIData
+import com.example.asaxiycompose2.screen.audiobook.AudioContent
 import com.example.asaxiycompose2.ui.theme.AsaxiyCompose2Theme
 
 class LibraryScreen() : Screen {
@@ -53,13 +55,15 @@ class LibraryScreen() : Screen {
         viewModel.onEventDispatcherLibrary(LibraryIntent.GetAllCategoryList)
 
         val categoryList by viewModel.loadCategoryBookList.collectAsState(initial = null)
-        val progress by viewModel.progress.collectAsState(initial = null)
+        val progress by viewModel.progress.collectAsState(initial = false)
         val message by viewModel.errorMessage.collectAsState(initial = null)
         if (message != null) {
             Toast.makeText(LocalContext.current, message, Toast.LENGTH_SHORT).show()
         }
-        categoryList?.let {
-            LibraryContent(it, viewModel)
+        if (categoryList == null) {
+            LibraryContent(emptyList(), viewModel, progress)
+        } else {
+            LibraryContent(categoryList!!, viewModel, progress)
         }
     }
 }
@@ -68,16 +72,21 @@ class LibraryScreen() : Screen {
 fun LibraryContent(
     list: List<AudioDataForAdapter>,
     viewModel: LibraryViewModel,
+    progress: Boolean?,
 
     ) {
-    var progress by remember { mutableStateOf(0.0f) }
-
-    LaunchedEffect(key1 = true) {
-        // Progressni o'zgartirish uchun misol shu jumladan foydalanishingiz mumkin
-        for (i in 0..100) {
-            progress = i / 100f
-        }
-    }
+//    if (progress == true) {
+//        Box(modifier = Modifier.fillMaxSize()) {
+//            CircularProgressIndicator(
+//                modifier = Modifier
+//                    .width(60.dp)
+//                    .height(60.dp)
+//                    .align(Alignment.Center),
+//                color = Color.Gray,
+//                strokeWidth = 5.dp
+//            )
+//        }
+//    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -107,15 +116,8 @@ fun LibraryContent(
 
 
         }
+
     }
-//    Box(modifier = Modifier.fillMaxSize()) {
-//        CircularProgressIndicator(
-//            progress = progress,
-//            color = Color.Blue, // Progress rangi
-//            strokeWidth = 6.dp, // Progress chiziqi kengligi
-//            modifier = Modifier.align(Alignment.Center)
-//        )
-//    }
 }
 
 
@@ -139,7 +141,8 @@ fun bookItem(bookUIData: BookUIData, modifier: Modifier) {
                     shape = RoundedCornerShape(topEnd = 12.dp, topStart = 12.dp)
                 )
         ) {
-            AsyncImage( model = bookUIData.bookImage,
+            AsyncImage(
+                model = bookUIData.bookImage,
                 placeholder = painterResource(id = R.drawable.book_app_image),
                 error = painterResource(id = R.drawable.book_app_image),
                 contentScale = ContentScale.Crop,
@@ -189,7 +192,7 @@ fun bookItem(bookUIData: BookUIData, modifier: Modifier) {
 }
 
 @Composable
-fun categoryItem(ls: AudioDataForAdapter,onEventDispatcher: (LibraryIntent) -> Unit) {
+fun categoryItem(ls: AudioDataForAdapter, onEventDispatcher: (LibraryIntent) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -225,8 +228,8 @@ fun categoryItem(ls: AudioDataForAdapter,onEventDispatcher: (LibraryIntent) -> U
         }
 
         LazyRow {
-            items(ls.list) { bookData->
-               bookItem(bookData, Modifier
+            items(ls.list) { bookData ->
+                bookItem(bookData, Modifier
                     .width(160.dp)
                     .height(300.dp)
                     .padding(4.dp)

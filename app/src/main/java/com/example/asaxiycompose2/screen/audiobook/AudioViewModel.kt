@@ -11,6 +11,7 @@ import com.example.asaxiycompose2.screen.audioall.ByCategoryAllAudioScreen
 import com.example.asaxiycompose2.utils.myLog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -23,14 +24,14 @@ class AudioViewModel @Inject constructor(
 ) : ViewModel() {
     val loadCategoryBookList = MutableSharedFlow<List<AudioDataForAdapter>>()
     val errorMessage = MutableSharedFlow<String>()
-    val progress = MutableSharedFlow<Boolean>()
+    val progress = MutableStateFlow(false)
 
     fun onEventDispatcherAudio(intent: AudioIntent) {
         "onEventDispatcherAudio".myLog()
         when (intent) {
-            AudioIntent.GetAllCategoryList ->
+            AudioIntent.GetAllCategoryList -> {
+                progress.value = true
                 repository.loadCategories().onEach {
-                    progress.emit(true)
                     it.onSuccess { bookUIDataList ->
                         progress.emit(false)
                         bookUIDataList.size.toString().myLog()
@@ -40,7 +41,7 @@ class AudioViewModel @Inject constructor(
                         errorMessage.emit(it.message.toString())
                     }
                 }.launchIn(viewModelScope)
-
+            }
             is AudioIntent.ClickAllAudio -> {
                 viewModelScope.launch {
                     navigator.navigate(ByCategoryAllAudioScreen(intent.list))

@@ -188,7 +188,7 @@ class AudioInfoScreen(data: BookUIData) : Screen {
                         ) {
                             Text(
                                 text = if (isHasBookLocal == true) {
-                                    "Audion Eshitish"
+                                    "Audioni Eshitish"
                                 } else {
                                     "Yuklab olish"
                                 },
@@ -210,14 +210,14 @@ class AudioInfoScreen(data: BookUIData) : Screen {
                                 fontFamily = FontFamily(Font(R.font.nunito_bold)),
                                 color = Color.Black
                             )
-                            "Porogress" + progressData.seekBar.toString().myLog()
-                            var sliderPosition by remember { mutableStateOf(progressData.seekBar) }
+//                            "Porogress" + progressData.seekBar.toString().myLog()
+//                            var sliderPosition by remember { mutableStateOf(progressData.seekBar) }
 
                             Slider(
                                 modifier = Modifier.padding(horizontal = 8.dp),
-                                value = sliderPosition,
+                                value = progressData.seekBar,
                                 onValueChange = { newValue ->
-                                    sliderPosition = newValue
+                                    progressData.seekBar = newValue
                                 },
                                 // Disable user interaction with the slider
                             )

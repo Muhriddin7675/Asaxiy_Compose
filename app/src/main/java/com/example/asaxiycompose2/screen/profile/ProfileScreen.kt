@@ -195,6 +195,9 @@ class ProfileScreen : Screen {
                 if(text == "Buyurtmalar tarixi"){
                     onEventDispatcher.invoke(ProfileIntent.ClickOrder)
                 }
+                else if(text == "Akkountdan chiqish"){
+                    onEventDispatcher.invoke(ProfileIntent.ClickLogAut)
+                }
             }
             .height(56.dp),
             verticalAlignment = Alignment.CenterVertically
