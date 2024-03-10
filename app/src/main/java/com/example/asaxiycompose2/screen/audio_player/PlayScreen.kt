@@ -181,7 +181,7 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
                     Slider(
                         modifier = Modifier.padding(horizontal = 8.dp),
 //                        value = seekBarState.value.toFloat(),
-                        value = 100f,
+                        value = 0f,
                         onValueChange = { newState ->
 //                            seekBarValue = newState.toInt()
 //                            onEventDispatcher.invoke(PlayContract.Intent.UserAction(CommandEnum.UPDATE_SEEKBAR))
@@ -212,7 +212,7 @@ class PlayScreen(audioPlayerData: AudioPlayerData) : Screen {
                             modifier = Modifier
                                 .width(0.dp)
                                 .weight(1f),
-                            text = duration
+                            text = "00:00"
                         )
                         Text(
                             modifier = Modifier
